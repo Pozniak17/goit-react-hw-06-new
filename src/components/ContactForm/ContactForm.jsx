@@ -1,38 +1,32 @@
-import { useState } from 'react';
 import {
   FormContainer,
   FormLabel,
   FormInput,
   Button,
-} from './ContactForm.styled';
+} from "./ContactForm.styled";
+import { useDispatch } from "react-redux";
+import { addContact } from "../redux/actions";
 
-export const ContactForm = ({ onSubmit }) => {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+export const ContactForm = () => {
+  const dispatch = useDispatch();
 
-  // обробник подій за атрибутом name✅
-  // якщо значення поля співпадає, записуємо значення в name/number
-  const handleChange = event => {
-    // setState({[name]:value}) --- в name запиши значення, в number запиши
-    const { name, value } = event.target;
-    if (name === 'name') {
-      setName(value);
-    } else if (name === 'number') {
-      setNumber(value);
-    }
-  };
-
-  const handleSumbit = event => {
+  const handleSumbit = (event) => {
     event.preventDefault();
-    // передаємо через проп onSumit => App
-    onSubmit(name, number);
+    const form = event.target;
+    const { name, number } = event.target;
+    console.log(name.value, number.value);
 
-    reset();
-  };
+    console.log(form.elements.name.value);
 
-  const reset = () => {
-    setName('');
-    setNumber('');
+    dispatch(
+      addContact({
+        id: crypto.randomUUID(),
+        name: form.elements.name.value,
+        number: form.elements.number.value,
+      })
+    );
+
+    form.reset();
   };
 
   return (
@@ -40,8 +34,8 @@ export const ContactForm = ({ onSubmit }) => {
       <FormLabel>
         Name
         <FormInput
-          value={name}
-          onChange={handleChange}
+          // value={name}
+          // onChange={handleChange}
           type="text"
           name="name"
           pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -54,8 +48,8 @@ export const ContactForm = ({ onSubmit }) => {
       <FormLabel>
         Number
         <FormInput
-          value={number}
-          onChange={handleChange}
+          // value={number}
+          // onChange={handleChange}
           type="tel"
           name="number"
           pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
